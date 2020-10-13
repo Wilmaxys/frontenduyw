@@ -1,26 +1,37 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react';
+import { BrowserRouter } from 'react-router-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import Test from './components/test/test';
+import Game from './views/game/game';
+import Ready from './components/game/ready/ready';
+import AuthenticatedRoute from './security/components/AuthenticatedRoute';
+import AuthenticationService from './security/service/AuthenticationService';
+import LoginComponent from './security/components/LoginComponent';
+import Login from './components/security/login/login';
+import Register from './components/security/register/register';
+import LogoutComponent from './security/components/LogoutComponent';
+
+class App extends Component {
+  render() {
+    return (
+      <BrowserRouter>
+      {AuthenticationService.isUserLoggedIn()
+        ? <Game>
+            <Switch>
+                <AuthenticatedRoute path="/logout" exact component={LogoutComponent} />
+                <AuthenticatedRoute path="/" exact component={Ready} />
+            </Switch>
+          </Game>
+        : <Switch>
+              <Route path="/register" exact component={Register} />
+              <Route path="/" exact component={Login} />
+              <Redirect from="/" to="/" />
+          </Switch>
+      }
+      </BrowserRouter>
+    );
+  }
 }
 
 export default App;
