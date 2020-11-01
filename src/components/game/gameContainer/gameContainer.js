@@ -16,7 +16,7 @@ import AxiosService from '../../../security/service/AxiosService';
 import PartyService from '../../../security/service/PartyService';
 import { subscribe, waitForConnect, publish } from '../../../security/service/wsService';
 import Ready from '../step/ready/ready';
-import Test2 from '../../test/test2';
+import Proposition from '../step/proposition/proposition';
 
 class GameContainer extends Component {
 
@@ -92,9 +92,12 @@ class GameContainer extends Component {
       console.log(array);
 
       array.forEach(element => {
-        console.log(object.username, this.state.username);
         if(object.username === element.username){
           element.ready = !element.ready;
+        }
+        if(element.ready === false)
+        {
+          AllReady = false;
         }
       });
 
@@ -105,8 +108,10 @@ class GameContainer extends Component {
         }
       });
 
-
-
+      if(AllReady === true)
+      {
+        this.props.history.push(`/ready/${this.state.id}/input`);
+      }
     });
 
     PartyService.retrieveAllPartyPlayers(this.state.id)
@@ -163,8 +168,8 @@ class GameContainer extends Component {
         <WrapContainer direction="row">
           <SizeableContainer size={8}>
             <Switch>
-              <Route path="/" component={() => { return <Ready state={this.state} /> }} />
-              <Route path="/ready/1/test2" exact component={Test2} />
+             <Route path={"/ready/"+this.state.id+"/input"} exact component={() => { return <Proposition state={this.state} /> }} />
+              <Route path={"/ready/"+this.state.id} component={() => { return <Ready state={this.state} /> }} />
             </Switch>
           </SizeableContainer>
           <SizeableContainer size={4}>

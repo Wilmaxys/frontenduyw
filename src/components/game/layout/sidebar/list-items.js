@@ -15,18 +15,6 @@ export const MainListItems = () => {
                 </ListItemIcon>
                 <ListItemText primary="Liste des parties" />
             </ListItem>
-            <ListItem button component={Link} to="/ready/1/test1">
-                <ListItemIcon>
-                    <DashboardIcon />
-                </ListItemIcon>
-                <ListItemText primary="Test" />
-            </ListItem>
-            <ListItem button component={Link} to="/ready/1/test2">
-                <ListItemIcon>
-                    <DashboardIcon />
-                </ListItemIcon>
-                <ListItemText primary="Test2" />
-            </ListItem>
             <ListItem button component={Link} to="/logout">
                 <ListItemIcon>
                     <ExitToAppIcon />

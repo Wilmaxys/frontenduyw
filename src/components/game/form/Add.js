@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
+import SportsEsportsIcon from '@material-ui/icons/SportsEsports';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import { withStyles } from "@material-ui/core/styles";
@@ -46,7 +46,7 @@ class Add extends Component {
             <Container component="main">
                 <div className={classes.paper}>
                     <Avatar className={classes.avatar}>
-                        <ShoppingBasketIcon />
+                        <SportsEsportsIcon />
                     </Avatar>
                     <Typography component="h1" variant="h5">
                         Créer une nouvelle partie
