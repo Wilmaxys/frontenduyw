@@ -15,7 +15,7 @@ import { initializeWS } from '../../../security/service/wsService';
 import AxiosService from '../../../security/service/AxiosService';
 import PartyService from '../../../security/service/PartyService';
 import { subscribe, waitForConnect, publish } from '../../../security/service/wsService';
-import Test1 from '../../test/test1';
+import Ready from '../step/ready/ready';
 import Test2 from '../../test/test2';
 
 class GameContainer extends Component {
@@ -31,9 +31,19 @@ class GameContainer extends Component {
     }
     initializeWS();
 
-    window.addEventListener("beforeunload", (ev) => 
-    {  
-        publish('/game/disconnected', {username: this.state.username});
+    window.addEventListener("beforeunload", (ev) => {
+      PartyService.unjoinAllParty(this.state.username)
+        .then(
+          response => {
+            console.log("unjoin");
+          }
+        ).catch((reason) => {
+          console.log(reason);
+          //this.props.history.push(`/logout`);
+        });
+
+      publish('/game/disconnected', { username: this.state.username });
+
     });
   }
 
@@ -43,19 +53,23 @@ class GameContainer extends Component {
       this.setState({
         game:
         {
-          players: [...this.state.game.players, response.body]
+          players: [...this.state.game.players, { username: response.body, ready: false, response: "" }]
         }
       })
-
-      console.log(this.state.game.players);
     });
 
     subscribe('/game/disconnected', response => {
       let responseJson = JSON.parse(response.body);
 
-      var index = this.state.game.players.indexOf(responseJson.username);
-      var array = this.state.game.players;
+      var index = -1;
 
+      for (var i = 0; i < this.state.game.players.length; i++) {
+        if (this.state.game.players[i].username === responseJson.username) {
+          index = i;
+        }
+      }
+
+      var array = this.state.game.players;
 
       if (index !== -1) {
         array.splice(index, 1)
@@ -70,6 +84,51 @@ class GameContainer extends Component {
 
     });
 
+    subscribe('/game/' + this.state.id + '/ready', response => {
+      let array = [...this.state.game.players];
+      let object = JSON.parse(response.body);
+      let AllReady = true;
+
+      console.log(array);
+
+      array.forEach(element => {
+        console.log(object.username, this.state.username);
+        if(object.username === element.username){
+          element.ready = !element.ready;
+        }
+      });
+
+      this.setState({
+        game:
+        {
+          players: array
+        }
+      });
+
+
+
+    });
+
+    PartyService.retrieveAllPartyPlayers(this.state.id)
+      .then(
+        response => {
+          let array = [...this.state.game.players];
+
+          response.data.forEach(element => {
+            array = [...this.state.game.players, { username: element.username, ready: false, response: "" }];
+          });
+
+          this.setState({
+            game:
+            {
+              players: [...this.state.game.players, ...array]
+            }
+          })
+        }
+      ).catch((reason) => {
+        this.props.history.push(`/logout`);
+      });
+
     PartyService.joinParty(this.state.id, this.state.username)
       .then(
         response => {
@@ -77,7 +136,7 @@ class GameContainer extends Component {
         }
       ).catch((reason) => {
         console.log(reason);
-        //this.props.history.push(`/logout`);
+        this.props.history.push(`/logout`);
       });
   }
 
@@ -94,7 +153,7 @@ class GameContainer extends Component {
           <List>
             {
               this.state.game.players.map((object, i) => {
-                return (<ListItem key={i}><Player username={object} /></ListItem>)
+                return (<ListItem key={i}><Player username={object.username} /></ListItem>)
               })
             }
           </List>
@@ -103,9 +162,8 @@ class GameContainer extends Component {
         </Sidebar>
         <WrapContainer direction="row">
           <SizeableContainer size={8}>
-            <button onClick={this.clickHandler}>Click me</button>
             <Switch>
-              <Route path="/ready/1/test1" exact component={Test1} />
+              <Route path="/" component={() => { return <Ready state={this.state} /> }} />
               <Route path="/ready/1/test2" exact component={Test2} />
             </Switch>
           </SizeableContainer>

@@ -1,10 +1,14 @@
 import axios from 'axios';
-import { tokenSaved, API_URL } from './AxiosService';
+import { tokenSaved } from './AxiosService';
 
 class CourseDataService {
 
     retrieveAllParty(name) {
         return axios.get(`http://localhost:8080/games/all`, { headers: { 'Authorization': tokenSaved } });
+    }
+
+    retrieveAllPartyPlayers(id) {
+        return axios.get(`http://localhost:8080/games/${id}/players`, { headers: { 'Authorization': tokenSaved } });
     }
 
     joinParty(idGame, username) {
@@ -29,8 +33,6 @@ class CourseDataService {
             'Content-Type': 'application/json',
             'Authorization': tokenSaved
         }
-
-        console.log(tokenSaved);
 
         return axios.post(`http://localhost:8080/games/create`,
             {

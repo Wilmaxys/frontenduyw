@@ -26,7 +26,6 @@ class ListCoursesComponent extends Component {
 
 
     render() {
-        console.log('render')
         return (
             <div className="container">
                 <h3>All Courses</h3>

@@ -28,10 +28,7 @@ export const subscribe = (path, callback) => {
 }
 
 export const unsubscribeALL = () => {
-  console.log(subscription);
-
   subscription.forEach(element => {
-    console.log("succeed");
     element.unsubscribe();
   });
 }
