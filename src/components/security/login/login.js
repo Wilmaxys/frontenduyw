@@ -3,14 +3,13 @@ import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import {Link} from 'react-router-dom';
 import Container from '@material-ui/core/Container';
 import styles from './login.css'
-import AuthenticationService from '../../../security/service/AuthenticationService';
+import AxiosService from '../../../security/service/AxiosService';
 import { withStyles } from "@material-ui/core/styles";
 
 class Login extends Component {
@@ -30,13 +29,11 @@ class Login extends Component {
   }
 
   handleSubmit(event) {
-    console.log(this.state.username, this.state.password)
-    AuthenticationService
+    AxiosService
           .executeJwtAuthenticationService(this.state.username, this.state.password)
           .then((response) => {
-            console.log(this.state.username, this.state.password)
-              AuthenticationService.registerSuccessfulLoginForJwt(this.state.username, response.data.token);
-              window.location.reload(false);
+              AxiosService.registerSuccessfulLoginForJwt(this.state.username, response.data.accessToken);
+              this.props.history.push(`/`);
           }).catch(() => {
               this.setState({ showSuccessMessage: false })
               this.setState({ hasLoginFailed: true })

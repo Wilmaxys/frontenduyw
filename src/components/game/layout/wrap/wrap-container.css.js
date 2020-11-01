@@ -1,11 +1,12 @@
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
-root: {
+  container: {
+    width: "100%",
     display: 'flex',
+    flexGrow:1,
     boxSizing: 'border-box',
-    flexGrow: '1',
-    alignSelf: 'stretch'
+    padding: '15px'
   },
 }));
 

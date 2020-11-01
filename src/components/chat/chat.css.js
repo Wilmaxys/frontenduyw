@@ -1,7 +1,8 @@
 const useStyles = (theme) => ({
     chatBox: {
         padding: '10px',
-        height: '82vh',
+        flexGrow: '1',
+        maxHeight: '95vh',
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden'
@@ -13,10 +14,10 @@ const useStyles = (theme) => ({
         color: 'white'
       },
       chatBoxMessages: {
+        overflowY: 'scroll',
         padding: '10px 15px 10px 0',
         flexGrow: '1',
         maxWidth: '100%',
-        overflow: 'scroll'
       },
       chatBoxFormSend: {
         flexGrow: '1',

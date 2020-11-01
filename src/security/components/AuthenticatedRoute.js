@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
 import { Route, Redirect } from 'react-router-dom'
-import AuthenticationService from '../service/AuthenticationService';
+import AxiosService, {tokenSaved} from '../service/AxiosService';
 
 class AuthenticatedRoute extends Component {
     render() {
         //sessionStorage.removeItem('authenticatedUser');
 //
-        //return (<div>{AuthenticationService.isUserLoggedIn().toString()}</div>);
+        //return (<div>{AxiosService.isUserLoggedIn().toString()}</div>);
 
-        if (AuthenticationService.isUserLoggedIn()) {
+        if (AxiosService.isUserLoggedIn() && tokenSaved !== "test") {
             return <Route {...this.props} />
         } else {
             return <Redirect to="/login" />

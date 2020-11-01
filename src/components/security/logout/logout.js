@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
-import AuthenticationService from '../service/AuthenticationService';
+import AuthenticationService from '../../../security/service/AxiosService';
 
 class LogoutComponent extends Component {
-    constructor(props) {
+    constructor() {
+        super();
         AuthenticationService.logout();
-        window.location.reload(false);
+    }
+
+    render() {
+        return (<Redirect to="/login" />)
     }
 }
 

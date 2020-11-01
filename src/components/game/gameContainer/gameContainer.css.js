@@ -1,7 +1,4 @@
-import { makeStyles } from '@material-ui/core/styles';
-const drawerWidth = 240;
-
-const useStyles = makeStyles((theme) => ({
+const useStyles = (theme) => ({
   contentShape: {
     position: 'absolute',
     top: '50%',
@@ -27,15 +24,12 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: '100%'
     }
   },
-  gridContainer: {
-    paddingRight: '20px'
-  },
   avatarContainer: {
     display: 'flex',
     alignItems: 'stretch',
     justifyContent: 'stretch',
     height: '100%',
   }
-}));
+});
 
 export default useStyles;
