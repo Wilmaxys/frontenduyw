@@ -5,7 +5,7 @@ export const initializeWS = () => {
     client = new Client();
 
     client.configure({
-      brokerURL: 'ws://localhost:8080/stomp'
+      brokerURL: 'ws://localhost:8080/stomp',
     });
 
     client.activate();
@@ -24,7 +24,16 @@ const waitFor = (conditionFunction) => {
 
 
 export const subscribe = (path, callback) => {
-  client.subscribe(path, callback);
+  subscription = [...subscription, client.subscribe(path, callback)]
+}
+
+export const unsubscribeALL = () => {
+  console.log(subscription);
+
+  subscription.forEach(element => {
+    console.log("succeed");
+    element.unsubscribe();
+  });
 }
 
 export const publish = (path, body) => {
@@ -36,6 +45,7 @@ export const waitForConnect = async () => {
 }
 
 export let client = null;
+export let subscription = [];
 
 
 

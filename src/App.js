@@ -6,6 +6,7 @@ import './App.css';
 import Game from './views/game/game';
 import GameContainer from './components/game/gameContainer/gameContainer';
 import Home from './components/game/home/home';
+import Add from './components/game/form/Add';
 import AuthenticatedRoute from './security/components/AuthenticatedRoute';
 import Login from './components/security/login/login';
 import Register from './components/security/register/register';
@@ -19,6 +20,7 @@ class App extends Component {
           <Switch>
             <AuthenticatedRoute path="/logout" exact component={LogoutComponent} />
             <AuthenticatedRoute path="/ready/:id" component={GameContainer} />
+            <AuthenticatedRoute path="/add" exact component={Add} />
             <AuthenticatedRoute path="/" exact component={Home} />
             <Route path="/register" exact component={Register} />
             <Route path="/login" exact component={Login} />

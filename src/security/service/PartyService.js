@@ -4,20 +4,52 @@ import { tokenSaved, API_URL } from './AxiosService';
 class CourseDataService {
 
     retrieveAllParty(name) {
-        console.log(tokenSaved);
         return axios.get(`http://localhost:8080/games/all`, { headers: { 'Authorization': tokenSaved } });
     }
 
-    joinParty(id, username) {
-        console.log(tokenSaved);
+    joinParty(idGame, username) {
         const headers = {
             'Content-Type': 'application/json',
             'Authorization': tokenSaved
         }
 
-        return axios.post(`http://localhost:8080/games/1/join`,
+        return axios.post(`http://localhost:8080/games/${idGame}/join`,
             {
-                id,
+                idGame,
+                username
+            }, 
+            {
+                headers: headers
+            }
+        );
+    }
+
+    createParty(name) {
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': tokenSaved
+        }
+
+        console.log(tokenSaved);
+
+        return axios.post(`http://localhost:8080/games/create`,
+            {
+                name
+            }, 
+            {
+                headers: headers
+            }
+        );
+    }
+
+    unjoinAllParty(username) {
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': tokenSaved
+        }
+
+        return axios.post(`http://localhost:8080/games/unjoinAll`,
+            {
                 username
             }, 
             {

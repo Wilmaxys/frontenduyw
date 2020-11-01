@@ -14,6 +14,7 @@ import { Route, Switch } from 'react-router-dom';
 import { initializeWS } from '../../../security/service/wsService';
 import AxiosService from '../../../security/service/AxiosService';
 import PartyService from '../../../security/service/PartyService';
+import { subscribe, waitForConnect, publish } from '../../../security/service/wsService';
 import Test1 from '../../test/test1';
 import Test2 from '../../test/test2';
 
@@ -23,12 +24,52 @@ class GameContainer extends Component {
     super(props);
     this.state = {
       id: this.props.match.params.id,
-      username: AxiosService.getLoggedInUserName()
+      username: AxiosService.getLoggedInUserName(),
+      game: {
+        players: []
+      }
     }
     initializeWS();
+
+    window.addEventListener("beforeunload", (ev) => 
+    {  
+        publish('/game/disconnected', {username: this.state.username});
+    });
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    await waitForConnect();
+    subscribe('/game/' + this.state.id + '/joined', response => {
+      this.setState({
+        game:
+        {
+          players: [...this.state.game.players, response.body]
+        }
+      })
+
+      console.log(this.state.game.players);
+    });
+
+    subscribe('/game/disconnected', response => {
+      let responseJson = JSON.parse(response.body);
+
+      var index = this.state.game.players.indexOf(responseJson.username);
+      var array = this.state.game.players;
+
+
+      if (index !== -1) {
+        array.splice(index, 1)
+      }
+
+      this.setState({
+        game:
+        {
+          players: array
+        }
+      })
+
+    });
+
     PartyService.joinParty(this.state.id, this.state.username)
       .then(
         response => {
@@ -51,17 +92,18 @@ class GameContainer extends Component {
           </List>
           <Divider />
           <List>
-            <ListItem><Player isCreator={true} username="Annie" /></ListItem>
-            <ListItem><Player isCreator={false} username="George" /></ListItem>
-            <ListItem><Player isCreator={false} username="Bertrand" /></ListItem>
-            <ListItem><Player isCreator={false} username="Pierre" /></ListItem>
+            {
+              this.state.game.players.map((object, i) => {
+                return (<ListItem key={i}><Player username={object} /></ListItem>)
+              })
+            }
           </List>
           <Divider />
           <MainListItems />
         </Sidebar>
         <WrapContainer direction="row">
           <SizeableContainer size={8}>
-          <button onClick={this.clickHandler}>Click me</button>
+            <button onClick={this.clickHandler}>Click me</button>
             <Switch>
               <Route path="/ready/1/test1" exact component={Test1} />
               <Route path="/ready/1/test2" exact component={Test2} />

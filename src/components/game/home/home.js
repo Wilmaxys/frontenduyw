@@ -13,12 +13,14 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import Button from '@material-ui/core/Button';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import styles from './home.css';
 import PartyService from '../../../security/service/PartyService';
 import { MainListItems } from '../layout/sidebar/list-items';
+import AxiosService from '../../../security/service/AxiosService';
+import { unsubscribeALL } from '../../../security/service/wsService';
 
 class Home extends Component {
 
@@ -26,12 +28,25 @@ class Home extends Component {
     super(props)
     this.state = {
       party: [],
-      message: null
+      message: null,
+      username: AxiosService.getLoggedInUserName()
     }
     this.refreshCourses = this.refreshCurrentParty.bind(this)
   }
 
   componentDidMount() {
+    PartyService.unjoinAllParty(this.state.username)
+      .then(
+        response => {
+          console.log("unjoin");
+        }
+      ).catch((reason) => {
+        console.log(reason);
+        //this.props.history.push(`/logout`);
+      });
+
+    unsubscribeALL();
+
     this.refreshCurrentParty();
   }
 
@@ -47,6 +62,7 @@ class Home extends Component {
   }
 
   render() {
+    const { classes } = this.props;
 
     return (
       <>
@@ -55,16 +71,19 @@ class Home extends Component {
             <ListItem><Player username="Annie" /></ListItem>
           </List>
           <Divider />
-          <MainListItems/>
+          <MainListItems />
         </Sidebar>
         <WrapContainer>
           <SizeableContainer size={12}>
-            <TableContainer component={Paper}>
+            <Button className={classes.mt4} variant="contained" color="primary" component={Link} to="/add">
+              Ajouter
+            </Button>
+            <TableContainer className={classes.mt4} component={Paper}>
               <Table size="small" aria-label="a dense table">
                 <TableHead>
                   <TableRow>
                     <TableCell>Name</TableCell>
-                    <TableCell>Access</TableCell>
+                    <TableCell>Accéder</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -74,7 +93,7 @@ class Home extends Component {
                         {row.name}
                       </TableCell>
                       <TableCell component="th" scope="row">
-                        <Button variant="contained" component={Link} to={"/ready/" + row.id}>{row.id}</Button>
+                        <Button variant="contained" component={Link} to={"/ready/" + row.id}>Jouer</Button>
                       </TableCell>
                     </TableRow>
                   ))}
